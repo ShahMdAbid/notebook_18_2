@@ -1,0 +1,33 @@
+COMPLETE PDF EXPORT FUNCTION - WORKING VERSION
+
+Insert this between line 610 and 611 of App.jsx:
+
+    const handleDownloadPDF = async () => {
+        const element = document.querySelector('.pages-stack');
+        if (!element) {
+            alert('No content to export!');
+            return;
+        }
+
+        await document.fonts.ready;
+
+        const opt = {
+            margin: 0,
+            filename: `${activeNote?.name || 'note'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                logging: true,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        try {
+            await html2pdf().from(element).set(opt).save();
+        } catch (error) {
+            console.error('PDF Error:', error);
+            alert('PDF generation failed: ' + error.message);
+        }
+    };
