@@ -15,7 +15,7 @@ import {
     Plus, FolderPlus, Folder, FileText, ChevronLeft, ChevronRight,
     Download, Trash2, Edit3, ChevronDown, Sun, Moon, Sparkles,
     Loader2, Settings, X, ClipboardCheck, PanelLeftClose, PanelLeftOpen,
-    Bot, ExternalLink, Upload, Wand2, RotateCcw
+    Bot, ExternalLink, Upload, Wand2, RotateCcw, Wrench, Palette, Scissors
 } from 'lucide-react';
 import 'katex/dist/katex.min.css';
 import './App.css';
@@ -503,6 +503,8 @@ function App() {
         return saved ? parseInt(saved, 10) : 0;
     });
     const [isCustomRefineOpen, setIsCustomRefineOpen] = useState(false);
+    const [isToolsMenuOpen, setIsToolsMenuOpen] = useState(false);
+    const [isColorMenuOpen, setIsColorMenuOpen] = useState(false);
     const [customRefineText, setCustomRefineText] = useState('');
     const [savedCustomInstructions, setSavedCustomInstructions] = useState(() => {
         const saved = localStorage.getItem('poring_saved_custom_instructions');
@@ -599,10 +601,14 @@ function App() {
             if (isInsertMenuOpen && !event.target.closest('.insert-dropdown-container')) {
                 setIsInsertMenuOpen(false);
             }
+            if (isToolsMenuOpen && !event.target.closest('.tools-dropdown-container')) {
+                setIsToolsMenuOpen(false);
+                setIsColorMenuOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isInsertMenuOpen]);
+    }, [isInsertMenuOpen, isToolsMenuOpen]);
 
     const updateContent = (content) => {
         setNotes(prevNotes => prevNotes.map(n => n.id === activeNoteId ? { ...n, content } : n));
@@ -1237,6 +1243,85 @@ Refine the content above. Return ONLY the final markdown.`
         setSavedCustomInstructions(newInstructions);
     };
 
+    // --- TOOLS DROP-DOWN HELPERS ---
+    const handleFormatting = (prefix, suffix) => {
+        const textarea = editorRef.current;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const fullText = activeNote.content;
+        const selectedText = fullText.substring(start, end);
+
+        const newText = prefix + selectedText + suffix;
+        const updatedContent = fullText.substring(0, start) + newText + fullText.substring(end);
+
+        updateContent(updatedContent);
+        setIsToolsMenuOpen(false);
+        setIsColorMenuOpen(false);
+
+        // Reset selection
+        setTimeout(() => {
+            textarea.selectionStart = start;
+            textarea.selectionEnd = start + newText.length;
+            textarea.focus();
+        }, 0);
+    };
+
+    const handleVerticalSpacing = () => {
+        const num = prompt("Enter number of lines for vertical spacing:", "1");
+        if (num === null) return;
+        const x = parseInt(num, 10);
+        if (isNaN(x) || x < 1) {
+            alert("Please enter a valid positive number.");
+            return;
+        }
+        handleFormatting("", `\n//${x}\n`);
+    };
+
+    const handleBreakMathBlock = () => {
+        const textarea = editorRef.current;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const fullText = activeNote.content;
+        const selectedText = fullText.substring(start, end);
+
+        // Check if selected text is a math block ($$ ... $$)
+        if (!selectedText.startsWith('$$') || !selectedText.endsWith('$$')) {
+            alert("Please select an entire math block (including $$ delimiters).");
+            return;
+        }
+
+        const segmentsPrompt = prompt("How many segments to split this block into?", "2");
+        if (segmentsPrompt === null) return;
+        const segmentsNum = parseInt(segmentsPrompt, 10);
+        if (isNaN(segmentsNum) || segmentsNum < 2) {
+            alert("Please enter a number >= 2.");
+            return;
+        }
+
+        // Strip $$
+        const innerText = selectedText.slice(2, -2).trim();
+        const lines = innerText.split('\n').filter(l => l.trim().length > 0);
+
+        if (lines.length < segmentsNum) {
+            alert(`Not enough lines in the math block to split into ${segmentsNum} segments.`);
+            return;
+        }
+
+        const linesPerSegment = Math.ceil(lines.length / segmentsNum);
+        let result = "";
+
+        for (let i = 0; i < segmentsNum; i++) {
+            const segmentLines = lines.slice(i * linesPerSegment, (i + 1) * linesPerSegment);
+            if (segmentLines.length > 0) {
+                result += "$$\n" + segmentLines.join('\n') + "\n$$\n";
+            }
+        }
+
+        const updatedContent = fullText.substring(0, start) + result.trim() + fullText.substring(end);
+        updateContent(updatedContent);
+        setIsToolsMenuOpen(false);
+    };
+
     // --- SYNC SCROLL LOGIC ---
     const handlePreviewClick = (e) => {
         // Fix Interaction Conflict: Prevent jump if user is selecting text
@@ -1572,6 +1657,80 @@ Refine the content above. Return ONLY the final markdown.`
                         )}
 
                         <div className="ai-buttons-group">
+                            <div className="tools-dropdown-container">
+                                <button
+                                    className={`btn-insert ${isToolsMenuOpen ? 'active' : ''}`}
+                                    onClick={() => setIsToolsMenuOpen(!isToolsMenuOpen)}
+                                    disabled={!activeNote}
+                                    title="Tools"
+                                >
+                                    <Wrench size={14} />
+                                    <ChevronDown size={14} className={`arrow ${isToolsMenuOpen ? 'up' : ''}`} />
+                                </button>
+
+                                {isToolsMenuOpen && (
+                                    <div className="insert-menu tools-menu">
+                                        <div className="insert-option" onClick={() => handleFormatting("**", "**")}>
+                                            <span>Bold</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("*", "*")}>
+                                            <span>Italic</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("++", "++")}>
+                                            <span>Underline</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("~~", "~~")}>
+                                            <span>Strikethrough</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("==", "==")}>
+                                            <span>Highlight</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("center[", "]")}>
+                                            <span>Center Align</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("", "\n---\n")}>
+                                            <span>Page Break</span>
+                                        </div>
+
+                                        <div
+                                            className="insert-option sub-menu-trigger"
+                                            onMouseEnter={() => setIsColorMenuOpen(true)}
+                                            onMouseLeave={() => setIsColorMenuOpen(false)}
+                                        >
+                                            <Palette size={14} />
+                                            <span>Color</span>
+                                            <ChevronRight size={14} style={{ marginLeft: 'auto' }} />
+
+                                            {isColorMenuOpen && (
+                                                <div className="insert-menu color-submenu">
+                                                    {['Red', 'Blue', 'Green', 'Orange', 'Purple', 'Gray'].map(clr => (
+                                                        <div
+                                                            key={clr}
+                                                            className="insert-option"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleFormatting(`${clr.toLowerCase()}[`, "]");
+                                                            }}
+                                                        >
+                                                            <div className={`color-dot bg-${clr.toLowerCase()}`} />
+                                                            <span>{clr}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="insert-option" onClick={handleVerticalSpacing}>
+                                            <span>Vertical Spacing</span>
+                                        </div>
+                                        <div className="insert-option" onClick={handleBreakMathBlock}>
+                                            <Scissors size={14} />
+                                            <span>Break Math Block</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="insert-dropdown-container">
                                 <button
                                     className={`btn-insert ${isInsertMenuOpen ? 'active' : ''}`}

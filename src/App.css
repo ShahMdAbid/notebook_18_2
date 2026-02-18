@@ -629,6 +629,53 @@ html,
   opacity: 1;
 }
 
+/* Tools Dropdown & Sub-menus */
+.tools-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tools-menu {
+  min-width: 180px;
+  overflow: visible; /* Allow sub-menu to overflow */
+}
+
+.sub-menu-trigger {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.color-submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 2px;
+  min-width: 140px;
+  z-index: 1001;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bg-red { background-color: #ef4444; }
+.bg-blue { background-color: #3b82f6; }
+.bg-green { background-color: #10b981; }
+.bg-orange { background-color: #f59e0b; }
+.bg-purple { background-color: #8b5cf6; }
+.bg-gray { background-color: #6b7280; }
+
+.dark-theme .color-submenu {
+  background: #2a2a2a;
+}
+
 /* Cover Page Picker Modal */
 .cover-picker-overlay {
   position: fixed;
