@@ -505,6 +505,7 @@ function App() {
     const [isInsertMenuOpen, setIsInsertMenuOpen] = useState(false);
     const [isCoverPagePickerOpen, setIsCoverPagePickerOpen] = useState(false);
     const [isRefining, setIsRefining] = useState(false);
+    const [isBreakingMath, setIsBreakingMath] = useState(false);
     const imageInputRef = useRef(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [apiKeys, setApiKeys] = useState(() => {
@@ -1304,7 +1305,7 @@ Refine the content above. Return ONLY the final markdown.`
         handleFormatting("", `\n//${x}\n`);
     };
 
-    const handleBreakMathBlock = () => {
+    const handleBreakMathBlock = async () => {
         const textarea = editorRef.current;
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -1312,41 +1313,85 @@ Refine the content above. Return ONLY the final markdown.`
         const selectedText = fullText.substring(start, end);
 
         // Check if selected text is a math block ($$ ... $$)
-        if (!selectedText.startsWith('$$') || !selectedText.endsWith('$$')) {
+        if (!selectedText.trim().startsWith('$$') || !selectedText.trim().endsWith('$$')) {
             alert("Please select an entire math block (including $$ delimiters).");
             return;
         }
 
-        const segmentsPrompt = prompt("How many segments to split this block into?", "2");
-        if (segmentsPrompt === null) return;
-        const segmentsNum = parseInt(segmentsPrompt, 10);
-        if (isNaN(segmentsNum) || segmentsNum < 2) {
-            alert("Please enter a number >= 2.");
+        const apiKey = apiKeys[activeApiKeyIndex];
+        if (!apiKey) {
+            alert('Please add a Groq API Key in Settings first.');
+            setIsSettingsOpen(true);
             return;
         }
 
-        // Strip $$
-        const innerText = selectedText.slice(2, -2).trim();
-        const lines = innerText.split('\n').filter(l => l.trim().length > 0);
-
-        if (lines.length < segmentsNum) {
-            alert(`Not enough lines in the math block to split into ${segmentsNum} segments.`);
-            return;
-        }
-
-        const linesPerSegment = Math.ceil(lines.length / segmentsNum);
-        let result = "";
-
-        for (let i = 0; i < segmentsNum; i++) {
-            const segmentLines = lines.slice(i * linesPerSegment, (i + 1) * linesPerSegment);
-            if (segmentLines.length > 0) {
-                result += "$$\n" + segmentLines.join('\n') + "\n$$\n";
-            }
-        }
-
-        const updatedContent = fullText.substring(0, start) + result.trim() + fullText.substring(end);
-        updateContent(updatedContent);
+        setIsBreakingMath(true);
         setIsToolsMenuOpen(false);
+
+        try {
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.3-70b-versatile',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `You are a Mathematics Typesetting Specialist.
+
+Your task is to take a single large LaTeX math block ($$ ... $$) and split it into multiple smaller, separate math blocks ($$ ... $$).
+
+### CRITICAL RULES:
+1. Preserve ALL mathematical logic and symbols exactly.
+2. If the block uses \\begin{aligned} ... \\end{aligned}, break it into separate blocks at logical derivation steps.
+3. Remove \\begin{aligned} and \\end{aligned} if they are no longer needed for single-line blocks, or keep smaller aligned blocks if the step is multi-line.
+4. Ensure every output block is wrapped in $$ ... $$.
+5. Add a single newline between the resulting blocks.
+6. **OUTPUT ONLY THE MARKDOWN MODIFICATION**. Do not include explanations, preambles, or conversational text.
+
+Example Input:
+$$
+\\begin{aligned}
+x &= y + z \\\\
+&= 10 + 5 \\\\
+&= 15
+\\end{aligned}
+$$
+
+Example Output:
+$$
+x = y + z
+$$
+
+$$
+= 10 + 5
+$$
+
+$$
+= 15
+$$`
+                        },
+                        { role: 'user', content: `Split this math block into logical separate blocks:\n\n${selectedText}` }
+                    ],
+                    temperature: 0
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+
+            const result = data.choices[0].message.content.trim();
+            const updatedContent = fullText.substring(0, start) + result + fullText.substring(end);
+            updateContent(updatedContent);
+        } catch (error) {
+            console.error('Math Break Error:', error);
+            alert('Failed to break math block: ' + error.message);
+        } finally {
+            setIsBreakingMath(false);
+        }
     };
 
     // --- SYNC SCROLL LOGIC ---
@@ -1760,8 +1805,8 @@ Refine the content above. Return ONLY the final markdown.`
                                             <span>Vertical Spacing</span>
                                         </div>
                                         <div className="insert-option" onClick={handleBreakMathBlock}>
-                                            <Scissors size={14} />
-                                            <span>Break Math Block</span>
+                                            {isBreakingMath ? <Loader2 className="spin" size={14} /> : <Scissors size={14} />}
+                                            <span>{isBreakingMath ? 'Breaking...' : 'Break Math Block'}</span>
                                         </div>
                                     </div>
                                 )}
