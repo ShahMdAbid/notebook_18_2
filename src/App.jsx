@@ -55,7 +55,7 @@ const base64ToBlob = (base64) => {
 const COVER_TEMPLATES = {
     sust_eee: `center[#Shahjalal University of Science and Technology]
 //1
-![Image|200](poring_img_1770564316930)
+![Image|200](https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png)
 //1
 center[blue[##Department of Electrical & Electronic Engineering] ]
 //1
@@ -1079,6 +1079,16 @@ OUTPUT ONLY the transformed content.
 
 ---
 
+### HEADER SYNTAX RULE (SCALABLE LAYOUT)
+
+NEVER use standard Markdown headers (#, ##, ###) for section titles.
+
+ALWAYS use bold text (**Text**) for section titles.
+
+This ensures font sizes scale correctly with user settings.
+
+---
+
 ### FINAL EXECUTION PRIORITY ORDER
 
 Priority 1 → Preserve wrappers EXACTLY
@@ -1160,6 +1170,9 @@ NEVER violate wrapper integrity.`
                             role: 'system',
                             content: `CRITICAL: You are a specialized Markdown Refinement Engine. 
 Your ONLY task is to re-write the user's content according to their specific instruction.
+
+### HEADER SYNTAX RULE:
+NEVER use # or ## for headers. ALWAYS wrap section titles in bold **Text**. This is for scalable font sizes.
 
 ### OUTPUT CONTRACT:
 1. Return ONLY the refined markdown.

@@ -637,7 +637,8 @@ html,
 
 .tools-menu {
   min-width: 180px;
-  overflow: visible; /* Allow sub-menu to overflow */
+  overflow: visible;
+  /* Allow sub-menu to overflow */
 }
 
 .sub-menu-trigger {
@@ -665,12 +666,29 @@ html,
   flex-shrink: 0;
 }
 
-.bg-red { background-color: #ef4444; }
-.bg-blue { background-color: #3b82f6; }
-.bg-green { background-color: #10b981; }
-.bg-orange { background-color: #f59e0b; }
-.bg-purple { background-color: #8b5cf6; }
-.bg-gray { background-color: #6b7280; }
+.bg-red {
+  background-color: #ef4444;
+}
+
+.bg-blue {
+  background-color: #3b82f6;
+}
+
+.bg-green {
+  background-color: #10b981;
+}
+
+.bg-orange {
+  background-color: #f59e0b;
+}
+
+.bg-purple {
+  background-color: #8b5cf6;
+}
+
+.bg-gray {
+  background-color: #6b7280;
+}
 
 .dark-theme .color-submenu {
   background: #2a2a2a;
