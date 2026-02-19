@@ -15,7 +15,8 @@ import {
     Plus, FolderPlus, Folder, FileText, ChevronLeft, ChevronRight,
     Download, Trash2, Edit3, ChevronDown, Sun, Moon, Sparkles,
     Loader2, Settings, X, ClipboardCheck, PanelLeftClose, PanelLeftOpen,
-    Bot, ExternalLink, Upload, Wand2, RotateCcw, Wrench, Palette, Scissors
+    Bot, ExternalLink, Upload, Wand2, RotateCcw, Wrench, Palette, Scissors,
+    AlignLeft, AlignCenter, AlignRight
 } from 'lucide-react';
 import 'katex/dist/katex.min.css';
 import './App.css';
@@ -53,7 +54,8 @@ const base64ToBlob = (base64) => {
 
 // --- HELPER: Asset Mapping (Obfuscation) ---
 const ASSET_MAP = {
-    SUST_LOGO: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png"
+    SUST_LOGO: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png",
+    BEGULA_IMG: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/Begula.png"
 };
 
 // --- HELPER: Cover Page Templates ---
@@ -86,7 +88,6 @@ center[red[###Lab Report / Assignment]]
 center[####Submission date : [today]]
 
 ---
-
 `
 };
 
@@ -992,6 +993,7 @@ green[...]
 orange[...]
 purple[...]
 gray[...]
+left[...]
 
 ++underline++
 
@@ -1093,9 +1095,9 @@ OUTPUT ONLY the transformed content.
 
 ### HEADER SYNTAX RULE (SCALABLE LAYOUT)
 
-NEVER use standard Markdown headers (#, ##, ###) for section titles.
+NEVER use standard Markdown headers (#, ##, ###) for section titles by your own unless user uses #,##,### by himself , dont re invent , if exist let it stay.
 
-ALWAYS use bold text (**Text**) for section titles.
+Use bold text (**Text**) for section titles otherwise.
 
 This ensures font sizes scale correctly with user settings.
 
@@ -1184,7 +1186,7 @@ NEVER violate wrapper integrity.`
 Your ONLY task is to re-write the user's content according to their specific instruction.
 
 ### HEADER SYNTAX RULE:
-NEVER use # or ## for headers. ALWAYS wrap section titles in bold **Text**. This is for scalable font sizes.
+NEVER use # or ## for headers unless user uses #,## by himself , dont re invent , if exist let it stay. ALWAYS wrap section titles in bold **Text** otherwise. This is for scalable font sizes.
 
 ### OUTPUT CONTRACT:
 1. Return ONLY the refined markdown.
@@ -1710,8 +1712,17 @@ Refine the content above. Return ONLY the final markdown.`
                                         <div className="insert-option" onClick={() => handleFormatting("==", "==")}>
                                             <span>Highlight</span>
                                         </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("left[", "]")}>
+                                            <AlignLeft size={14} />
+                                            <span>Left Align</span>
+                                        </div>
                                         <div className="insert-option" onClick={() => handleFormatting("center[", "]")}>
+                                            <AlignCenter size={14} />
                                             <span>Center Align</span>
+                                        </div>
+                                        <div className="insert-option" onClick={() => handleFormatting("right[", "]")}>
+                                            <AlignRight size={14} />
+                                            <span>Right Align</span>
                                         </div>
                                         <div className="insert-option" onClick={() => handleFormatting("", "\n---\n")}>
                                             <span>Page Break</span>
@@ -1912,7 +1923,7 @@ Refine the content above. Return ONLY the final markdown.`
                                             processedLine = processedLine.replace(/\[today\]/g, todayStr);
 
                                             // 2. HEADINGS (Support center[...], colors, etc.)
-                                            const hMatch = processedLine.match(/^([\s\.]*(?:(?:red|blue|green|orange|purple|gray|center|right)\[\s*)*)(#+)/);
+                                            const hMatch = processedLine.match(/^([\s\.]*(?:(?:red|blue|green|orange|purple|gray|center|right|left)\[\s*)*)(#+)/);
                                             if (hMatch) {
                                                 const prefix = hMatch[1];
                                                 const hashes = hMatch[2];
@@ -1938,7 +1949,7 @@ Refine the content above. Return ONLY the final markdown.`
                                         }).join('\n');
 
                                         // 3. BALANCED TAGS (Colors & Alignment)
-                                        const tags = ['red', 'blue', 'green', 'orange', 'purple', 'gray', 'center', 'right'];
+                                        const tags = ['red', 'blue', 'green', 'orange', 'purple', 'gray', 'center', 'right', 'left'];
                                         const applyBalanced = (text) => {
                                             const regex = new RegExp(`(${tags.join('|')})\\[`, 'g');
                                             let match;

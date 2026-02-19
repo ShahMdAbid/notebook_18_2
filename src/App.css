@@ -1244,6 +1244,11 @@ html,
   display: block;
 }
 
+.left {
+  text-align: left !important;
+  display: block;
+}
+
 /* Decoration Helpers */
 .markdown-body mark {
   background-color: #fff3bf;
