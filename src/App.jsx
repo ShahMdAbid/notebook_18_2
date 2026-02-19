@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import 'katex/dist/katex.min.css';
 import './App.css';
+import guideContent from './guide.md?raw';
 
 // --- HELPER: Database Persistence ---
 const PORING_SECRET_KEY = "PORING_SECRET_KEY";
@@ -339,109 +340,7 @@ const MarkdownComponents = {
 const ABOUT_NOTE = {
     id: 'about-poring-notebook-v2',
     name: 'User guide & Changelog',
-    content: `center[blue[## Poring Notebook]]
-
-
-
-## I. Overview
-
-If you’ve ever battled **MS Word** over a broken equation, spent hours fighting **LaTeX** syntax for a simple lab report , or lost your best AI insights in a messy chat history—**Poring Notebook is for you.**. A fast, private workspace built for students who want decent results without the formatting headache.
-
-
-*   **Sub-second Speed:** Near-instant AI refinement and 2x high-resolution PDF rendering.
-*   **Local-First Privacy:** Your notes and images stay in your browser, not on a server.
-*   **Layout Stability:** What you see is what you print.
-//1
-## II. Setup
-1.  Click the **Settings ⚙️** icon in the header.
-2.  Select **"Get API Key"** or visit the [Groq Console](https://console.groq.com/keys).
-3.  Create key , paste your key here and click **Save**.
-4.  Create folder, hover on it, click + for new note.
-
-//1
-## III. Magic Refine 
-Instead of manual formatting, use the "Magic Refine" mode, it fixes broken Markdown and Math tags. It **does not** change your wording.
-
-
-**Note on Layout:** If your **Spacing** is set to "Narrow/Too Narrow," it will automatically shift headers down (H1 $\rightarrow$ H2) to save space, vice versa.
-
-//1
-## IV. Print Control
-*   **Red Line:** This indicates where a physical page ends. 
-*   **Page Breaks:** Type \`---\` on a new line to force a page-break.
-*   **Spacing:** Type \`//x\` (e.g., \`//2\`) to add empty vertical lines. Injects x lines of vertical space.
-> **⚠️ IMPORTANT: Layout Stability**
-> If a large Math block or Image crosses a page boundary, it will push the entire document downward. This can cause the **red page-break lines** on subsequent pages to become inaccurate. So use a manual page break \`---\` immediately before the overflowing content to reset the alignment for the following pages. You can also divide the large math blocks in small ones .
-
-
-## V. Shortcuts
-
-Poring Notebook provides full native support for CommonMark and KaTeX, enhanced with proprietary shortcuts to bypass complex HTML/CSS for rapid document design.
-//1
-#### 1. Colors & Alignment
-*   **Colors:** Wrap text in \`color[text]\` (e.g., \`red[text]\`, \`blue[text]\`, \`green[text]\`, \`orange[text]\`, \`purple[text]\`, \`gray[text]\`).
-*   **Highlight:** Use \`==text==\` for yellow or \`color==text==\` for custom colors.
-*   **Underline:** Use \`++text++\` for academic underlining.
-*   **Alignment:** Use \`center[text]\` or \`right[text]\` for block alignment.
-
-#### 2. Layout Tweaks
-*   **Dot Alignment:** Start a line with \`..\` (e.g., \`.. # Heading\`) to shift content right while preserving the heading style.
-*   **Insert Menu:** Use the toolbar to add high-quality **Cover Pages** or generic images.
-#### Navigation
-*   **Sync Scroll:** Click any paragraph, header, or equation in the **Right Preview Pane** to instantly jump your cursor to that specific line in the editor.
-
-//1
-## VI. Media & Portability
-
-#### 1. Image Handling
-*   **Paste Support:** Press \`Ctrl+V\` to embed images directly. They are stored in your browser's **IndexedDB**.
-*   **Persistence:** Images persist across refreshes, but clearing browser data or using Incognito mode may lead to data loss.
-
-#### 2. Portable Notes (.poring)
-Markdown files usually lose their images when shared. Use **Export .poring** to download an encrypted package containing both your text and local images. Use the **Import** button in the sidebar to restore them.
-
-//1
-## VII. Math Reference
-Equations are rendered using **KaTeX** for maximum speed and clarity.
-
-*   **Inline:** Use single dollar for inline eqn like $E=mc^2$
-*   **Block:** Wrap in double dollars for mathblock.
-
-$$
-\\sum_{n=0}^{\\infty} \\frac{x^n}{n!} = e^x
-$$
-Use \`center[]\` if u want to show them in middle ,
-
-center[$$
-\\sum_{n=0}^{\\infty} \\frac{x^n}{n!} = e^x
-$$]
-
-In multiline mathblock use &= instead of = so that the equal signs stay aligned.
-//1
-**Mathematical Stress Test**
-This section validates the **KaTeX rendering engine** and layout stability under technical loads.
-
-$$
-\\begin{aligned}
-\\text{1. Calculus: Limits \\& Integrals} \\\\
-\\lim_{x \\to 0} \\frac{x^2 \\sqrt{1+x^2}}{\\sin^2(x)} &= \\int_0^{\\pi/2} \\left( \\frac{\\sin(\\alpha x)}{e^{-x^2}} \\right) d\\alpha \\\\\\\\ 
-\\text{2. Series \\& Derivatives} \\\\
-\\sum_{n=1}^{\\infty} \\frac{(-1)^n}{n^2} \\mathcal{F}(\\omega) &= \\frac{d}{dx} \\left[ \\prod_{k=1}^{n} \\left( x^k + e^{ikx} \\right) \\right] \\\\\\\\ 
-\\text{3. Vector Calculus \\& PDEs} \\\\
-\\iint_{\\Omega} (\\nabla \\cdot \\vec{F}) \\, dA &= \\iint_{\\Omega} \\left( \\frac{\\partial^2 u}{\\partial x^2} - \\frac{\\partial^2 u}{\\partial t^2} \\right) d\\Omega \\\\\\\\ 
-\\text{4. Linear Algebra (Matrices)} \\\\
-A = \\begin{bmatrix} 1 & 2 & 3 \\\\ 0 & -1 & 4 \\\\ 2 & 1 & 0 \\end{bmatrix}, \\quad &A^{-1} = \\frac{1}{\\det(A)} \\operatorname{adj}(A) \\\\\\\\ 
-\\text{5. Complex Analysis} \\\\
-z = r e^{i\\theta}, \\quad |z| = \\sqrt{z\\bar{z}}, \\quad &\\arg(z) \\in (-\\pi, \\pi] \\\\\\\\ 
-\\text{6. Boundary Value Problems} \\\\
-\\begin{cases} \\nabla^2 \\phi = 0 \\\\ \\phi(0,t) = 0 \\\\ \\phi(L,t) = V_0 \\sin(\\omega t) \\end{cases} &\\implies \\phi(x,t) = \\sum_{n=1}^{\\infty} A_n \\sin\\left(\\frac{n\\pi x}{L}\\right) e^{-\\frac{n\\pi t}{L}} \\\\\\\\ 
-\\text{7. Transforms \\& Logic} \\\\
-\\mathcal{L} \\left\\{ e^{-at} \\sin(\\omega t) \\right\\} = \\frac{\\omega}{(s+a)^2 + \\omega^2} \\quad &\\wedge \\quad (P \\implies Q) \\equiv (\\neg P \\vee Q) \\\\\\\\ 
-\\text{8. The Gaussian Identity} \\\\
-\\boxed{ \\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi} }
-\\end{aligned}
-$$
-\``
+    content: guideContent
 };
 
 function App() {
@@ -684,7 +583,7 @@ function App() {
 
         try {
             const key = await saveImageToDB(file);
-            const markdown = `![Image|300](${key})`;
+            const markdown = `![Image | 300](${key})`;
             const textarea = editorRef.current;
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
@@ -744,7 +643,7 @@ function App() {
                 const blob = items[i].getAsFile();
                 try {
                     const key = await saveImageToDB(blob);
-                    const markdown = `![Image|300](${key})`;
+                    const markdown = `![Image | 300](${key})`;
                     const textarea = editorRef.current;
                     const start = textarea.selectionStart;
                     const end = textarea.selectionEnd;
@@ -829,7 +728,7 @@ function App() {
 
                 // Create New Note
                 const newNote = {
-                    id: `imported_${Date.now()}`,
+                    id: `imported_${Date.now()} `,
                     name: packageObj.title || "Imported Note",
                     content: packageObj.markdown || "",
                     folderId: null
@@ -852,7 +751,7 @@ function App() {
         const apiKey = apiKeys[activeApiKeyIndex];
 
         if (!apiKey || apiKey.trim() === '') {
-            alert(`API Key ${activeApiKeyIndex + 1} is empty. Please select a valid key in Settings.`);
+            alert(`API Key ${activeApiKeyIndex + 1} is empty.Please select a valid key in Settings.`);
             setIsSettingsOpen(true);
             return;
         }
@@ -874,7 +773,7 @@ function App() {
             const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`,
+                    'Authorization': `Bearer ${apiKey} `,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -889,18 +788,18 @@ Your function is STRICTLY LIMITED to structural formatting and mathematical type
 You are NOT allowed to rewrite, interpret, infer, complete, fix, or improve the content in any way.
 
 
-### CRITICAL CORE DIRECTIVE (ABSOLUTE PRIORITY)
+### CRITICAL CORE DIRECTIVE(ABSOLUTE PRIORITY)
 
 Preserve ALL original content EXACTLY, including:
 
 - words
-- numbers
-- symbols
-- spacing
-- line breaks
-- wrappers
-- custom syntax
-- malformed expressions
+    - numbers
+    - symbols
+    - spacing
+    - line breaks
+        - wrappers
+        - custom syntax
+            - malformed expressions
 
 DO NOT add, remove, reorder, or rewrite ANY content.
 
@@ -916,27 +815,27 @@ Your ONLY job is to apply proper LaTeX math delimiters and alignment formatting.
 
 ---
 
-### TRANSFORMATION SCOPE (ONLY THESE ARE ALLOWED)
+### TRANSFORMATION SCOPE(ONLY THESE ARE ALLOWED)
 
 You MAY ONLY:
 
-• Add inline math delimiters: $ ... $
+• Add inline math delimiters: $ ...$
 
-• Add display math delimiters: $$ ... $$
+• Add display math delimiters: $$ ...$$
 
 
 • Insert alignment markers &
 
 • Insert line breaks \\ inside aligned blocks
 
-• Convert plain-text math into valid LaTeX math syntax
+• Convert plain - text math into valid LaTeX math syntax
 
 
 $$
-\begin{aligned}
+\begin{ aligned }
 ...
 ...
-\end{aligned}
+\end{ aligned }
 $$
 
 
@@ -945,16 +844,16 @@ $$
 
 ### INLINE vs DISPLAY RULE
 
-Use INLINE math ($ ... $) when:
+Use INLINE math($ ...$) when:
 
 • expression is short
 • expression is inside text
-• single-line math
+• single - line math
 
-Use DISPLAY math ($$ ... $$) when:
+Use DISPLAY math($$ ...$$) when:
 
 • expression is standalone
-• multi-line derivation
+• multi - line derivation
 • contains alignment steps
 
 Display math MUST:
@@ -971,18 +870,18 @@ x = y + z
 
 Output:
 $$
-\begin{aligned}
+\begin{ aligned }
 x &= y + z \\
 &= 10 + 5 \\
 &= 15
-\end{aligned}
+\end{ aligned }
 $$
 
 
 
 ---
 
-### WRAPPER INTEGRITY RULE (HIGHEST STRUCTURAL PRIORITY)
+### WRAPPER INTEGRITY RULE(HIGHEST STRUCTURAL PRIORITY)
 
 The following constructs are STRUCTURAL WRAPPERS used by the editor:
 
@@ -998,14 +897,14 @@ left[...]
 
 ++underline++
 
-==highlight==
+== highlight ==
 
-red==highlight==
+    red == highlight ==
 
-//1
-//2
-//3
-etc.
+    //1
+    //2
+    //3
+    etc.
 
 These wrappers are NOT LaTeX.
 
@@ -1026,7 +925,7 @@ NEVER:
 • wrap wrappers with $ or $$
 • convert wrappers into LaTeX
 
-WRAPPERS MUST REMAIN CHARACTER-FOR-CHARACTER IDENTICAL.
+WRAPPERS MUST REMAIN CHARACTER - FOR - CHARACTER IDENTICAL.
 
 ---
 
@@ -1046,21 +945,21 @@ Correct example:
 
 Input:
 red[
-x = y + z
+    x = y + z
 = 10
 ]
 
 Output:
 red[
-$$
-\begin{aligned}
+    $$
+\begin{ aligned }
 x &= y + z \\
 &= 10
-\end{aligned}
+\end{ aligned }
 $$
 ]
 
-WRAPPER stays untouched. ONLY internal math is converted.
+WRAPPER stays untouched.ONLY internal math is converted.
 
 
 ### NEVER MOVE MATH OUTSIDE WRAPPERS
@@ -1076,9 +975,9 @@ center[$x = y$]
 
 ### CODE BLOCK PROTECTION RULE
 
-If content appears inside , DO NOT modify ANYTHING inside.
+If content appears inside, DO NOT modify ANYTHING inside.
 
-### OUTPUT RULES (STRICT)
+### OUTPUT RULES(STRICT)
 
 Return ONLY the refined Markdown.
 
@@ -1094,11 +993,11 @@ OUTPUT ONLY the transformed content.
 
 ---
 
-### HEADER SYNTAX RULE (SCALABLE LAYOUT)
+### HEADER SYNTAX RULE(SCALABLE LAYOUT)
 
-NEVER use standard Markdown headers (#, ##, ###) for section titles by your own unless user uses #,##,### by himself , dont re invent , if exist let it stay.
+NEVER use standard Markdown headers(#, ##, ###) for section titles by your own unless user uses #,##,### by himself, dont re invent, if exist let it stay.
 
-Use bold text (**Text**) for section titles otherwise.
+    Use bold text (** Text **) for section titles otherwise.
 
 This ensures font sizes scale correctly with user settings.
 
@@ -1115,7 +1014,7 @@ Wrappers ALWAYS override math formatting if conflict occurs.
 
 NEVER violate wrapper integrity.`
                         },
-                        { role: 'user', content: `Refine this note.Return only markdown: \n\n${textToRefine}` }
+                        { role: 'user', content: `Refine this note.Return only markdown: \n\n${textToRefine} ` }
                     ],
                     temperature: 0
                 })
@@ -1426,20 +1325,20 @@ $$`
         if (isNaN(trueLineNum) || !editorRef.current) return;
 
         const textarea = editorRef.current;
-        const rawContent = activeNote?.content || '';
+        const content = textarea.value;
         // 6. Calculate Character Index for that line (Robust Scanner for Windows \r\n)
         let startIndex = 0;
         let currentLine = 1;
-        while (currentLine < trueLineNum && startIndex < rawContent.length) {
-            const nextNewline = rawContent.indexOf('\n', startIndex);
+        while (currentLine < trueLineNum && startIndex < content.length) {
+            const nextNewline = content.indexOf('\n', startIndex);
             if (nextNewline === -1) break;
             startIndex = nextNewline + 1;
             currentLine++;
         }
 
         // Find end of line
-        const endOfLine = rawContent.indexOf('\n', startIndex);
-        const endIndex = endOfLine === -1 ? rawContent.length : endOfLine;
+        const endOfLine = content.indexOf('\n', startIndex);
+        const endIndex = endOfLine === -1 ? content.length : endOfLine;
 
         // 7. Highlight the text in the editor
         textarea.focus();
