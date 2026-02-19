@@ -1325,6 +1325,14 @@ Refine the content above. Return ONLY the final markdown.`
             return;
         }
 
+        const segmentsPrompt = prompt("Target number of segments to split this block into?", "2");
+        if (segmentsPrompt === null) return;
+        const segmentsNum = parseInt(segmentsPrompt, 10);
+        if (isNaN(segmentsNum) || segmentsNum < 2) {
+            alert("Please enter a number >= 2.");
+            return;
+        }
+
         setIsBreakingMath(true);
         setIsToolsMenuOpen(false);
 
@@ -1346,13 +1354,14 @@ Your task is to take a single large LaTeX math block ($$ ... $$) and split it in
 
 ### CRITICAL RULES:
 1. Preserve ALL mathematical logic and symbols exactly.
-2. If the block uses \\begin{aligned} ... \\end{aligned}, break it into separate blocks at logical derivation steps.
-3. Remove \\begin{aligned} and \\end{aligned} if they are no longer needed for single-line blocks, or keep smaller aligned blocks if the step is multi-line.
-4. Ensure every output block is wrapped in $$ ... $$.
-5. Add a single newline between the resulting blocks.
-6. **OUTPUT ONLY THE MARKDOWN MODIFICATION**. Do not include explanations, preambles, or conversational text.
+2. The user will specify a TARGET number of blocks. Aim to split the content into approximately that many blocks based on logical derivation steps.
+3. If the content is an "aligned" environment (\\begin{aligned} ... \\end{aligned}), split it at the line breaks (\\\\) while keeping the alignment logic valid for each resulting block.
+4. If a split result contains multiple lines of math, wrap them in a new \\begin{aligned} ... \\end{aligned} block inside the $$ tags if needed for alignment.
+5. Every output block must be wrapped in $$ ... $$.
+6. Add a single newline between the resulting blocks.
+7. **OUTPUT ONLY THE MARKDOWN MODIFICATION**. Do not include explanations, preambles, or conversational text.
 
-Example Input:
+Example Input (Target: 3):
 $$
 \\begin{aligned}
 x &= y + z \\\\
@@ -1374,7 +1383,7 @@ $$
 = 15
 $$`
                         },
-                        { role: 'user', content: `Split this math block into logical separate blocks:\n\n${selectedText}` }
+                        { role: 'user', content: `Split this math block into exactly ${segmentsNum} logical separate blocks:\n\n${selectedText}` }
                     ],
                     temperature: 0
                 })
@@ -1757,17 +1766,9 @@ $$`
                                         <div className="insert-option" onClick={() => handleFormatting("==", "==")}>
                                             <span>Highlight</span>
                                         </div>
-                                        <div className="insert-option" onClick={() => handleFormatting("left[", "]")}>
-                                            <AlignLeft size={14} />
-                                            <span>Left Align</span>
-                                        </div>
                                         <div className="insert-option" onClick={() => handleFormatting("center[", "]")}>
                                             <AlignCenter size={14} />
                                             <span>Center Align</span>
-                                        </div>
-                                        <div className="insert-option" onClick={() => handleFormatting("right[", "]")}>
-                                            <AlignRight size={14} />
-                                            <span>Right Align</span>
                                         </div>
                                         <div className="insert-option" onClick={() => handleFormatting("", "\n---\n")}>
                                             <span>Page Break</span>
