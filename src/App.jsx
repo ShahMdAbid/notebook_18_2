@@ -51,30 +51,39 @@ const base64ToBlob = (base64) => {
     return new Blob([uInt8Array], { type: contentType });
 };
 
+// --- HELPER: Asset Mapping (Obfuscation) ---
+const ASSET_MAP = {
+    SUST_LOGO: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png"
+};
+
 // --- HELPER: Cover Page Templates ---
 const COVER_TEMPLATES = {
     sust_eee: `center[#Shahjalal University of Science and Technology]
 //1
-![Image|200](https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png)
+
+![Image|200](SUST_LOGO)
+
 //1
+
 center[blue[##Department of Electrical & Electronic Engineering] ]
 //1
 
 center[###Course Title: ]
 center[###Course Code:]
 //1
-center[###Lab Report / Assignment ]
+
+center[red[###Lab Report / Assignment]]
 //2
 
 ###Experiment no. : 
 ###**Experiment name**: 
 
 | **Submitted By:** | **Submitted To:** |
-| :--- | :--- |
+| :---------------- | :---------------- |
 | Name <br> Reg. No. :| Teacher's name  <br> Designation <br> Department |
 
 
-center[Submission date : [today]]
+center[####Submission date : [today]]
 
 ---
 
@@ -138,15 +147,18 @@ const CustomImage = ({ src, alt }) => {
 
     useEffect(() => {
         let objectUrl = null;
-        if (src && src.startsWith('poring_img_')) {
-            localforage.getItem(src).then(blob => {
+        // Resolve from ASSET_MAP if keyword exists
+        const resolvedSrc = ASSET_MAP[src] || src;
+
+        if (resolvedSrc && resolvedSrc.startsWith('poring_img_')) {
+            localforage.getItem(resolvedSrc).then(blob => {
                 if (blob) {
                     objectUrl = URL.createObjectURL(blob);
                     setImgSrc(objectUrl);
                 }
             }).catch(err => console.error("Error loading image from DB:", err));
         } else {
-            setImgSrc(src);
+            setImgSrc(resolvedSrc);
         }
 
         return () => {
