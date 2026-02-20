@@ -53,10 +53,13 @@ const base64ToBlob = (base64) => {
     return new Blob([uInt8Array], { type: contentType });
 };
 
+import SustLogo from './assets/sust_logo.png';
+import BegulaImg from './assets/Begula.png';
+
 // --- HELPER: Asset Mapping (Obfuscation) ---
 const ASSET_MAP = {
-    SUST_LOGO: "./sust_logo.png",
-    BEGULA_IMG: "./Begula.png"
+    SUST_LOGO: SustLogo,
+    BEGULA_IMG: BegulaImg
 };
 
 // --- HELPER: Cover Page Templates ---
