@@ -55,8 +55,8 @@ const base64ToBlob = (base64) => {
 
 // --- HELPER: Asset Mapping (Obfuscation) ---
 const ASSET_MAP = {
-    SUST_LOGO: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/sust_logo.png",
-    BEGULA_IMG: "https://cdn.jsdelivr.net/gh/ShahMdAbid/notebook_18_2@main/Begula.png"
+    SUST_LOGO: "./sust_logo.png",
+    BEGULA_IMG: "./Begula.png"
 };
 
 // --- HELPER: Cover Page Templates ---
