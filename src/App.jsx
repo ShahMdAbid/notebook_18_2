@@ -1879,12 +1879,7 @@ $$`
                                                 processedLine = hashes + ' ' + prefix + rest;
                                             }
 
-                                            // 3. PAGE BREAKS (--- with optional leading dots/spaces)
-                                            if (processedLine.match(/^[\s\.]*---[\s\.]*$/)) {
-                                                return `<div class="manual-page-break" data-source-line="${lineNum}"></div>`;
-                                            }
-
-                                            // 4. INDENTATION (.. -> &nbsp;)
+                                            // 3. INDENTATION (.. -> &nbsp;)
                                             processedLine = processedLine.replace(/^([#\s]*?)(\.+)/, (match, prefix, dots) => {
                                                 return prefix + '&nbsp;'.repeat(dots.length * 2);
                                             });
