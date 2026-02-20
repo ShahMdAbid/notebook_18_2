@@ -23,13 +23,15 @@ Create a folder, hover over it, and click **+** for a new note.
 
 **~~text~~**: Strikethrough 
 
+```code block```: Anything inside this remains exactly as typed.
+
 ```==text==```: Yellow highlight (double equal signs on both sides)
 ```color==text==```: Custom color highlight (example: `green==text==`)
 
 ```red[] / blue[] / green[] / purple[] / orange[] / gray[]```: For colored text
 
 
-**`code block`**: Anything inside this remains exactly as typed.
+
 
 ```$ ... $```: Inline math
 ```$$ ... $$```: Block math
@@ -51,7 +53,7 @@ line 2
 ```right[], left[]```: Right or left align content
 
 ```.....```: Custom alignment; dots are invisible in the final PDF.
-.................example:
+.................Example
 
 
 
@@ -67,7 +69,7 @@ Here, "Image" is the default name of the file, "300" is the adjustable size, and
 
 **Reverse Sync**: Click anywhere in the PDF Preview to jump to the corresponding section in the editor.
 
-**AI Refine**: Select a specific area before using tools and AI refine. Refining the entire content at once may lead to data loss due to token limitations. There are two modes: **Custom Refine** (e.g., change tone to academic) and **Enhance Syntax** (fix broken math).
+**AI Refine**: Select a specific area before using tools and AI refine. Refining the entire content at once may lead to data loss due to token limitations. There are two modes: **Custom Refine** (works on custom instruction, e.g., change tone to academic) and **Enhance Syntax** (fix broken math).
 
 **Red Line in PDF Preview**: This indicates where a physical page ends.
 
